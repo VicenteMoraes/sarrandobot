@@ -67,4 +67,4 @@ async def on_message(message):
 
 
 if __name__ == "__main__":
-    client.run("NzU4MDE2NDk5MjEzNDAyMTky.X2oz4A.OfTBcZ8DxI-DWSt4PUVH8wn8QUA")
+    client.run("token")
