@@ -18,7 +18,7 @@ def is_admin(member):
 async def play_clip(channel, clip):
     vc = await channel.connect()
     audio = MP3(clip)
-    vc.play(discord.FFmpegPCMAudio(clip), after=lambda e: print('done ', e))
+    vc.play(discord.FFmpegPCMAudio(clip), after=lambda e: print('done', e))
     await asyncio.sleep(audio.info.length)
     await vc.disconnect(force=True)
 
@@ -68,6 +68,11 @@ async def on_message(message):
 
     if message.content.startswith('!git'):
         await message.channel.send("Meu código: https://github.com/VicenteMoraes/sarrandobot")
+
+
+@client.event
+async def on_member_join(member):
+   pass
 
 
 if __name__ == "__main__":
