@@ -18,7 +18,7 @@ def is_admin(member):
 async def play_clip(channel, clip):
     vc = await channel.connect()
     audio = MP3(clip)
-    vc.play(discord.FFmpegPCMAudio(clip), after=lambda e: print('done', e))
+    vc.play(discord.FFmpegPCMAudio(clip), after=lambda e: print('done ', e))
     await asyncio.sleep(audio.info.length)
     await vc.disconnect(force=True)
 
@@ -62,8 +62,12 @@ async def on_message(message):
             await play_clip(channel=message.author.voice.channel, clip='audio/joao.mp3')
         if message.content.startswith('!pombo'):
             await play_clip(channel=message.author.voice.channel, clip='audio/pombo.mp3')
-    except Exception as e:
-        print(e)
+
+    except AttributeError:
+        await message.channel.send(f"{message.author.mention}, você não está em um Canal de Voz.")
+
+    if message.content.startswith('!git'):
+        await message.channel.send("Meu código: https://github.com/VicenteMoraes/sarrandobot")
 
 
 if __name__ == "__main__":
