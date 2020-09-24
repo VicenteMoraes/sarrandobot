@@ -22,6 +22,13 @@ async def play_clip(channel, clip):
     await asyncio.sleep(audio.info.length)
     await vc.disconnect(force=True)
 
+async def disconnect_channel(message):
+    channel = message.author.voice.channel
+    if len(client.voice_clients) == 0: return await message.channel.send('Bot não conectado à nenhum canal.')
+    isConnected = client.voice_clients[0].channel == channel
+    if not isConnected: return await message.channel.send(f"{message.author.mention}, para usar este comando você e o Bot precisam estar conectados ao mesmo canal.")
+    await client.voice_clients[0].disconnect(force=True)
+
 
 @client.event
 async def on_ready():
@@ -32,7 +39,8 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-
+    if message.content.startswith('!stop') and is_admin(message.author):
+        await disconnect_channel(message);
     try:
         if message.content.startswith('!mute') and is_admin(message.author):
             channel = message.author.voice.channel.members
@@ -62,7 +70,8 @@ async def on_message(message):
             await play_clip(channel=message.author.voice.channel, clip='audio/joao.mp3')
         if message.content.startswith('!pombo'):
             await play_clip(channel=message.author.voice.channel, clip='audio/pombo.mp3')
-
+        if message.content.startswith('!comandos'):
+            await message.channel.send("Lista de comandos:\n!chama\n!discord\n!galaxiana\n!hehe\n!ihu\n!mod (apenas admin)\n!mute (apenas admin)\n!pombo\n!stop (apenas admin)\n!tazmania\n!unmute (apenas admin)\n!vergonha\n")
     except AttributeError:
         await message.channel.send(f"{message.author.mention}, você não está em um Canal de Voz.")
 
