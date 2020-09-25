@@ -7,7 +7,10 @@
     "!chama": "audio/chama.mp3",
     "!discord": "audio/discord.mp3",
     "!tazmania": "audio/tazmania.mp3",
-    "!pombo": "audio/pombo.mp3"
+    "!pombo": "audio/pombo.mp3",
+    "!win": "audio/win.mp3",
+    "!mc-tambs": "audio/mc-tambs.mp3",
+    "!bobao": "audio/bobao.mp3"
   },
   "admin": {
     "!mod": "audio/mod.mp3",

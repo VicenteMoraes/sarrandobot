@@ -5,7 +5,7 @@ import json
 
 client = discord.Client()
 vc = None
-timeout = 300
+timeout = 180
 with open("commands.json", "r") as rf:
     file = json.load(rf)
 normal = file["normal"]
@@ -37,16 +37,21 @@ async def play_clip(channel, clip):
 
 async def vc_disconnect(voice):
     global vc
-    await voice.disconnect(force=True)
+    vc = await voice.disconnect(force=True)
 
 
 async def disconnect_channel(message):
+    global vc
+    global inactivity_timer
     channel = message.author.voice.channel
-    if len(client.voice_clients) == 0:
+    if not vc or not vc.is_connected():
+    #if len(client.voice_clients) == 0:
         return await message.channel.send('Bot não conectado à nenhum canal.')
-    if not client.voice_clients[0].channel == channel:
+    if channel != vc.channel:
         return await message.channel.send(f"{message.author.mention}, para usar este comando você e o Bot precisam estar conectados ao mesmo canal.")
-    await client.voice_clients[0].disconnect(force=True)
+    if inactivity_timer.is_alive:
+        inactivity_timer.cancel()
+    vc = await client.voice_clients[0].disconnect(force=True)
 
 
 @client.event
@@ -59,7 +64,7 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.content.startswith('!pare') and is_admin(message.author):
-        await disconnect_channel(message.author.voice.channel)
+        await disconnect_channel(message)
     try:
         if message.content.startswith('!mute') and is_admin(message.author):
             await mute(message.author.voice.channel.members, True)
