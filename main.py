@@ -1,9 +1,10 @@
 import discord
 import asyncio
-from mutagen.mp3 import MP3
-
+from timer import Timer
 
 client = discord.Client()
+vc = None
+timeout = 300
 
 
 async def mute(members, mute):
@@ -16,17 +17,30 @@ def is_admin(member):
 
 
 async def play_clip(channel, clip):
-    vc = await channel.connect()
-    audio = MP3(clip)
+    global vc
+    global inactivity_timer
+    if not vc or channel != vc.channel:
+        vc = await channel.connect()
+    elif inactivity_timer.is_alive:
+        inactivity_timer.cancel()
     vc.play(discord.FFmpegPCMAudio(clip), after=lambda e: print('done', e))
-    await asyncio.sleep(audio.info.length)
-    await vc.disconnect(force=True)
+    await asyncio.sleep(1)
+    while vc.is_playing():
+        await asyncio.sleep(1)
+    inactivity_timer.start(vc)
+
+
+async def vc_disconnect(voice):
+    global vc
+    await voice.disconnect(force=True)
+
 
 async def disconnect_channel(message):
     channel = message.author.voice.channel
-    if len(client.voice_clients) == 0: return await message.channel.send('Bot não conectado à nenhum canal.')
-    isConnected = client.voice_clients[0].channel == channel
-    if not isConnected: return await message.channel.send(f"{message.author.mention}, para usar este comando você e o Bot precisam estar conectados ao mesmo canal.")
+    if len(client.voice_clients) == 0:
+        return await message.channel.send('Bot não conectado à nenhum canal.')
+    if not client.voice_clients[0].channel == channel:
+        return await message.channel.send(f"{message.author.mention}, para usar este comando você e o Bot precisam estar conectados ao mesmo canal.")
     await client.voice_clients[0].disconnect(force=True)
 
 
@@ -40,15 +54,13 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.content.startswith('!stop') and is_admin(message.author):
-        await disconnect_channel(message);
+        await disconnect_channel(message.author.voice.channel)
     try:
         if message.content.startswith('!mute') and is_admin(message.author):
-            channel = message.author.voice.channel.members
-            await mute(channel, True)
+            await mute(message.author.voice.channel.members, True)
 
         if message.content.startswith('!unmute') and is_admin(message.author):
-            channel = message.author.voice.channel.members
-            await mute(channel, False)
+            await mute(message.author.voice.channel.members, False)
 
         if message.content.startswith('!galaxiana'):
             await play_clip(channel=message.author.voice.channel, clip='audio/jotavic.mp3')
@@ -74,6 +86,9 @@ async def on_message(message):
             await message.channel.send("Lista de comandos:\n!chama\n!discord\n!galaxiana\n!hehe\n!ihu\n!mod (apenas admin)\n!mute (apenas admin)\n!pombo\n!stop (apenas admin)\n!tazmania\n!unmute (apenas admin)\n!vergonha\n")
     except AttributeError:
         await message.channel.send(f"{message.author.mention}, você não está em um Canal de Voz.")
+    except discord.errors.ClientException:
+        # playing audio twice
+        pass
 
     if message.content.startswith('!git'):
         await message.channel.send("Meu código: https://github.com/VicenteMoraes/sarrandobot")
@@ -87,4 +102,5 @@ async def on_member_join(member):
 if __name__ == "__main__":
     with open("token", "r") as rf:
         token = rf.readline()
+    inactivity_timer = Timer(timeout, vc_disconnect)
     client.run(token)
