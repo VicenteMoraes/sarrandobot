@@ -1,0 +1,16 @@
+{
+  "normal": {
+    "!galaxiana": "audio/jotavic.mp3",
+    "!vergonha": "audio/vergonha.mp3",
+    "!hehe": "audio/risada2.mp3",
+    "!ihu": "audio/ihu.mp3",
+    "!chama": "audio/chama.mp3",
+    "!discord": "audio/discord.mp3",
+    "!tazmania": "audio/tazmania.mp3",
+    "!pombo": "audio/pombo.mp3"
+  },
+  "admin": {
+    "!mod": "audio/mod.mp3",
+    "!tira": "audio/joao.mp3"
+  }
+}

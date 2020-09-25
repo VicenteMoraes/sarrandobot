@@ -1,15 +1,20 @@
 import discord
 import asyncio
 from timer import Timer
+import json
 
 client = discord.Client()
 vc = None
 timeout = 300
+with open("commands.json", "r") as rf:
+    file = json.load(rf)
+normal = file["normal"]
+admin = file["admin"]
 
 
-async def mute(members, mute):
+async def mute(members, mute_state):
     for member in members:
-        await member.edit(mute=mute)
+        await member.edit(mute=mute_state)
 
 
 def is_admin(member):
@@ -53,7 +58,7 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    if message.content.startswith('!stop') and is_admin(message.author):
+    if message.content.startswith('!pare') and is_admin(message.author):
         await disconnect_channel(message.author.voice.channel)
     try:
         if message.content.startswith('!mute') and is_admin(message.author):
@@ -62,28 +67,20 @@ async def on_message(message):
         if message.content.startswith('!unmute') and is_admin(message.author):
             await mute(message.author.voice.channel.members, False)
 
-        if message.content.startswith('!galaxiana'):
-            await play_clip(channel=message.author.voice.channel, clip='audio/jotavic.mp3')
-        if message.content.startswith('!vergonha'):
-            await play_clip(channel=message.author.voice.channel, clip='audio/vergonha.mp3')
-        if message.content.startswith('!hehe'):
-            await play_clip(channel=message.author.voice.channel, clip='audio/risada2.mp3')
-        if message.content.startswith('!ihu'):
-            await play_clip(channel=message.author.voice.channel, clip='audio/ihu.mp3')
-        if message.content.startswith('!chama'):
-            await play_clip(channel=message.author.voice.channel, clip='audio/chama.mp3')
-        if message.content.startswith('!discord'):
-            await play_clip(channel=message.author.voice.channel, clip='audio/discord.mp3')
-        if message.content.startswith('!tazmania'):
-            await play_clip(channel=message.author.voice.channel, clip='audio/tazmania.mp3')
-        if message.content.startswith('!mod') and is_admin(message.author):
-            await play_clip(channel=message.author.voice.channel, clip='audio/mod.mp3')
-        if message.content.startswith('!tira') and is_admin(message.author):
-            await play_clip(channel=message.author.voice.channel, clip='audio/joao.mp3')
-        if message.content.startswith('!pombo'):
-            await play_clip(channel=message.author.voice.channel, clip='audio/pombo.mp3')
+        for cmd, clip in admin.items():
+            if message.content.startswith(cmd) and is_admin(message.author):
+                await play_clip(channel=message.author.voice.channel, clip=clip)
+                break
+
+        for cmd, clip in normal.items():
+            if message.content.startswith(cmd):
+                await play_clip(channel=message.author.voice.channel, clip=clip)
+                break
+
         if message.content.startswith('!comandos'):
-            await message.channel.send("Lista de comandos:\n!chama\n!discord\n!galaxiana\n!hehe\n!ihu\n!mod (apenas admin)\n!mute (apenas admin)\n!pombo\n!stop (apenas admin)\n!tazmania\n!unmute (apenas admin)\n!vergonha\n")
+            commands_msgs = '\n'.join(normal.keys())
+            await message.channel.send(f"Lista de comandos:\n{commands_msgs}")
+
     except AttributeError:
         await message.channel.send(f"{message.author.mention}, você não está em um Canal de Voz.")
     except discord.errors.ClientException:
