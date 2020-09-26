@@ -5,7 +5,8 @@ import json
 
 client = discord.Client()
 vc = None
-timeout = 180
+timeout = 60
+
 with open("commands.json", "r") as rf:
     file = json.load(rf)
 normal = file["normal"]
@@ -45,7 +46,6 @@ async def disconnect_channel(message):
     global inactivity_timer
     channel = message.author.voice.channel
     if not vc or not vc.is_connected():
-    #if len(client.voice_clients) == 0:
         return await message.channel.send('Bot não conectado à nenhum canal.')
     if channel != vc.channel:
         return await message.channel.send(f"{message.author.mention}, para usar este comando você e o Bot precisam estar conectados ao mesmo canal.")
@@ -63,19 +63,20 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    if message.content.startswith('!pare') and is_admin(message.author):
+    if message.content.startswith('!pare'):
         await disconnect_channel(message)
     try:
-        if message.content.startswith('!mute') and is_admin(message.author):
-            await mute(message.author.voice.channel.members, True)
+        if is_admin(message.author):
+            if message.content.startswith('!mute'):
+                await mute(message.author.voice.channel.members, True)
 
-        if message.content.startswith('!unmute') and is_admin(message.author):
-            await mute(message.author.voice.channel.members, False)
+            if message.content.startswith('!unmute'):
+                await mute(message.author.voice.channel.members, False)
 
-        for cmd, clip in admin.items():
-            if message.content.startswith(cmd) and is_admin(message.author):
-                await play_clip(channel=message.author.voice.channel, clip=clip)
-                break
+            for cmd, clip in admin.items():
+                if message.content.startswith(cmd):
+                    await play_clip(channel=message.author.voice.channel, clip=clip)
+                    break
 
         for cmd, clip in normal.items():
             if message.content.startswith(cmd):
@@ -83,14 +84,15 @@ async def on_message(message):
                 break
 
         if message.content.startswith('!comandos'):
-            commands_msgs = '\n'.join(normal.keys())
-            await message.channel.send(f"Lista de comandos:\n{commands_msgs}")
+            audio_commands = '\n'.join(normal.keys())
+            await message.channel.send(f"Lista de comandos:\n{audio_commands}")
 
-    except AttributeError:
+    except AttributeError as e:
         await message.channel.send(f"{message.author.mention}, você não está em um Canal de Voz.")
-    except discord.errors.ClientException:
+        print(e)
+    except discord.errors.ClientException as e:
         # playing audio twice
-        pass
+        print(e)
 
     if message.content.startswith('!git'):
         await message.channel.send("Meu código: https://github.com/VicenteMoraes/sarrandobot")

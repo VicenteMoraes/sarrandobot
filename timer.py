@@ -20,4 +20,3 @@ class Timer:
     def cancel(self):
         self._task.cancel()
         self.is_alive = False
-        print(self.is_alive)
