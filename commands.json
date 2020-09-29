@@ -11,7 +11,13 @@
     "!win": "audio/win.mp3",
     "!mc-tambs": "audio/mc-tambs.mp3",
     "!bobao": "audio/bobao.mp3",
-    "!calor": "audio/calor.mp3"
+    "!calor": "audio/calor.mp3",
+    "!fechou": "audio/fechou.mp3",
+    "!acordei": "audio/acordei.mp3",
+    "!superlucao": "audio/superlucao.mp3",
+    "!raiva": "audio/raiva.mp3",
+    "!dance": "audio/dance.mp3",
+    "!perfeito": "audio/perfeito.mp3"
   },
   "admin": {
     "!mod": "audio/mod.mp3",
