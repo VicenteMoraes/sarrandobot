@@ -17,7 +17,10 @@
     "!superlucao": "audio/superlucao.mp3",
     "!raiva": "audio/raiva.mp3",
     "!dance": "audio/dance.mp3",
-    "!perfeito": "audio/perfeito.mp3"
+    "!perfeito": "audio/perfeito.mp3",
+    "!hihi": "audio/hihi.mp3",
+    "!recado": "audio/recado.mp3",
+    "!galo": "audio/galo.mp3"
   },
   "admin": {
     "!mod": "audio/mod.mp3",
