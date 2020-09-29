@@ -31,7 +31,7 @@ async def play_clip(channel, clip):
         inactivity_timer.cancel()
     vc.play(discord.FFmpegPCMAudio(clip), after=lambda e: print('done', e))
     await asyncio.sleep(1)
-    while vc.is_playing():
+    while vc and vc.is_playing():
         await asyncio.sleep(1)
     inactivity_timer.start(vc)
 
