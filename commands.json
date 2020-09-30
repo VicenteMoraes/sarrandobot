@@ -20,7 +20,9 @@
     "!perfeito": "audio/perfeito.mp3",
     "!hihi": "audio/hihi.mp3",
     "!recado": "audio/recado.mp3",
-    "!galo": "audio/galo.mp3"
+    "!galo": "audio/galo.mp3",
+    "!clutch": "audio/clutch.mp3",
+    "!vitoria": "audio/vitoria.mp3"
   },
   "admin": {
     "!mod": "audio/mod.mp3",
