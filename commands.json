@@ -22,7 +22,9 @@
     "!recado": "audio/recado.mp3",
     "!galo": "audio/galo.mp3",
     "!clutch": "audio/clutch.mp3",
-    "!vitoria": "audio/vitoria.mp3"
+    "!vitoria": "audio/vitoria.mp3",
+    "!nerdola": "audio/nerdola.mp3",
+    "!tmnc": "audio/tmnc.mp3"
   },
   "admin": {
     "!mod": "audio/mod.mp3",
