@@ -99,6 +99,11 @@ async def on_message(message):
 
 
 @client.event
+async def on_voice_state_update(member, before, after):
+    if member.name == "Jotavic" and not before.channel and after.channel is not None:
+        await play_clip(after.channel, clip="audio/nerdola.mp3")
+
+@client.event
 async def on_member_join(member):
    pass
 
