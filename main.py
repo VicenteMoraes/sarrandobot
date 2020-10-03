@@ -104,6 +104,8 @@ async def on_voice_state_update(member, before, after):
         await play_clip(after.channel, clip="audio/nerdola.mp3")
     elif member.name == "pombo" and not before.channel and after.channel is not None:
         await play_clip(after.channel, clip="audio/pombo.mp3")
+    elif member.name == "BadBad" and not before.channel and after.channel is not None:
+        await play_clip(after.channel, clip="audio/tiltado.mp3")
 
 @client.event
 async def on_member_join(member):
